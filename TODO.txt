@@ -1,0 +1,10 @@
+[ ] implement a most recently selected square
+    - updating this square will return the old one to normal and change the new one to selected
+[ ] make an enum for pieces
+[ ] draw the actual pieces
+[ ] show piece recommendations on click
+[ ] make piece movement
+[ ] make turns
+[ ] make check condition
+[ ] make checkmate & win/loss/draw
+[ ] make special rules (caste, queening, en-pessaunt)
