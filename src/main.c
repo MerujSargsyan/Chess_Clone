@@ -14,15 +14,34 @@ const int h_padding = (window_height - sq_dim*8)/2;
 
 const int board_dim = min(window_width - w_padding, window_height - h_padding);
 
-const int board[8][8];
+typedef struct Square {
+    Color col;
+    int piece;
+    Rectangle rect;
+};
+
+struct Square board[8][8];
+
+void init_board() {
+    bool white = false;
+    for(int x = 0; x < 8; x++) {
+        white = !white;
+        for(int y = 0; y < 8; y++) {
+            board[x][y] = (struct Square) {
+                col(white),
+                0, //TODO: use enum
+                (Rectangle) {x*sq_dim+w_padding , y*sq_dim+h_padding, sq_dim, sq_dim}
+            };
+            white = !white;
+        }
+    }
+}
 
 void draw_board() {
-    bool white = false;
-    for(int x = w_padding; x < board_dim; x+=sq_dim) {
-        white = !white;
-        for(int y = h_padding; y < board_dim; y+=sq_dim) {
-            DrawRectangle(x, y, sq_dim, sq_dim, col(white));
-            white = !white;
+    for(int x = 0; x < 8; x++) {
+        for(int y = 0; y < 8; y++) {
+            struct Square sq = board[x][y];
+            DrawRectangleRec(sq.rect, sq.col);
         }
     }
 
@@ -30,16 +49,26 @@ void draw_board() {
     DrawLine(w_padding, h_padding, w_padding, board_dim, BLACK);
     DrawLine(w_padding, board_dim, board_dim, board_dim, BLACK);
     DrawLine(board_dim, h_padding, board_dim, board_dim, BLACK);
-
 }
 
 void draw() {
     draw_board();
 }
 
+void check_input(Vector2 pos) {
+    int x = (pos.x- w_padding)/sq_dim;
+    int y = (pos.y- h_padding)/sq_dim;
+    if(x >= 0 && x < 8 && y >= 0 && y < 8)
+    {
+        board[x][y].col = RED;
+    } else {
+        board[x][y].col = BLACK; //col(x*y+x % 2);
+    }
+}
+
 void init() {
     InitWindow(window_width, window_height, "Chess Clone");
-    printf("%d\n", board_dim);
+    init_board();
 }
 
 void update() {
@@ -48,6 +77,7 @@ void update() {
         ClearBackground(WHITE);
         // TODO: implement update based draw system
         draw();
+        if(IsMouseButtonDown(MOUSE_BUTTON_LEFT)) check_input(GetMousePosition());
         EndDrawing();
     }
 }
