@@ -16,18 +16,21 @@ const int board_dim = min(window_width - w_padding, window_height - h_padding);
 
 typedef struct Square {
     Color col;
+    Color main_col;
     int piece;
     Rectangle rect;
-};
+} Square;
 
-struct Square board[8][8];
+Square board[8][8];
+Square* current; //most recently clicked
 
 void init_board() {
     bool white = false;
     for(int x = 0; x < 8; x++) {
         white = !white;
         for(int y = 0; y < 8; y++) {
-            board[x][y] = (struct Square) {
+            board[x][y] = (Square) {
+                col(white),
                 col(white),
                 0, //TODO: use enum
                 (Rectangle) {x*sq_dim+w_padding , y*sq_dim+h_padding, sq_dim, sq_dim}
@@ -40,7 +43,7 @@ void init_board() {
 void draw_board() {
     for(int x = 0; x < 8; x++) {
         for(int y = 0; y < 8; y++) {
-            struct Square sq = board[x][y];
+            Square sq = board[x][y];
             DrawRectangleRec(sq.rect, sq.col);
         }
     }
@@ -56,14 +59,14 @@ void draw() {
 }
 
 void check_input(Vector2 pos) {
-    int x = (pos.x- w_padding)/sq_dim;
-    int y = (pos.y- h_padding)/sq_dim;
-    if(x >= 0 && x < 8 && y >= 0 && y < 8)
+    if(pos.x >= w_padding && pos.x < board_dim && pos.y >= h_padding && pos.y < board_dim)
     {
-        board[x][y].col = RED;
-    } else {
-        board[x][y].col = BLACK; //col(x*y+x % 2);
+        int x = (pos.x- w_padding)/sq_dim;
+        int y = (pos.y- h_padding)/sq_dim;
+        if(current) current->col = current->main_col;
+        current = &board[x][y];
     }
+    if(current) current->col = BLUE;
 }
 
 void init() {
