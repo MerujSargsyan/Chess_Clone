@@ -35,27 +35,35 @@ Square* current; //most recently clicked
 
 void init_board() {
     bool white = false;
-    for(int x = 0; x < 8; x++) {
+    for(int y = 0; y < 8; y++) {
         white = !white;
-        for(int y = 0; y < 8; y++) {
-            board[x][y] = (Square) {
+        for(int x = 0; x < 8; x++) {
+            board[y][x] = (Square) {
                 col(white),
                 col(white),
-                KING, //TODO: use enum
+                0, //TODO: use enum
                 (Rectangle) {x*sq_dim+w_padding , y*sq_dim+h_padding, sq_dim, sq_dim}
             };
             white = !white;
         }
     }
+
+    for(int x = 0; x < 8; x++) {
+        board[1][x].piece = PAWN;
+    }
+
+    for(int x = 0; x < 8; x++) {
+        board[6][x].piece = PAWN;
+    }
 }
 
 void draw_board() {
-    for(int x = 0; x < 8; x++) {
-        for(int y = 0; y < 8; y++) {
-            Square sq = board[x][y];
+    for(int y = 0; y < 8; y++) {
+        for(int x = 0; x < 8; x++) {
+            Square sq = board[y][x];
             DrawRectangleRec(sq.rect, sq.col);
             Vector2 textPos = (Vector2){ sq.rect.x + sq_dim/2, sq.rect.y + sq_dim/2};
-            DrawTextCodepoint(GetFontDefault(), sq.piece + '0', textPos, 12.0f, BLACK);
+            if(sq.piece) DrawTextCodepoint(GetFontDefault(), sq.piece + '0', textPos, 12.0f, col(!sq.col.r));
         }
     }
 
