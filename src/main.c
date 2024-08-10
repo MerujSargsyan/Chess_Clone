@@ -55,6 +55,27 @@ void init_board() {
     for(int x = 0; x < 8; x++) {
         board[6][x].piece = PAWN;
     }
+
+    board[0][0].piece = ROOK;
+    board[0][7].piece = ROOK;
+    board[7][0].piece = ROOK;
+    board[7][7].piece = ROOK;
+
+    board[0][1].piece = KNIGHT;
+    board[0][6].piece = KNIGHT;
+    board[7][1].piece = KNIGHT;
+    board[7][6].piece = KNIGHT;
+
+    board[0][2].piece = BISHOP;
+    board[0][5].piece = BISHOP;
+    board[7][2].piece = BISHOP;
+    board[7][5].piece = BISHOP;
+
+    board[0][3].piece = QUEEN;
+    board[7][3].piece = QUEEN;
+
+    board[0][4].piece = KING;
+    board[7][4].piece = KING;
 }
 
 void draw_board() {
@@ -83,7 +104,7 @@ void check_input(Vector2 pos) {
         int x = (pos.x- w_padding)/sq_dim;
         int y = (pos.y- h_padding)/sq_dim;
         if(current) current->col = current->main_col;
-        current = &board[x][y];
+        current = &board[y][x];
     }
     if(current) current->col = BLUE;
 }
