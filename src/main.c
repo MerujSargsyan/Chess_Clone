@@ -14,6 +14,15 @@ const int h_padding = (window_height - sq_dim*8)/2;
 
 const int board_dim = min(window_width - w_padding, window_height - h_padding);
 
+enum Pieace {
+    PAWN = 1,
+    KNIGHT,
+    BISHOP,
+    ROOK,
+    QUEEN,
+    KING
+};
+
 typedef struct Square {
     Color col;
     Color main_col;
@@ -32,7 +41,7 @@ void init_board() {
             board[x][y] = (Square) {
                 col(white),
                 col(white),
-                0, //TODO: use enum
+                KING, //TODO: use enum
                 (Rectangle) {x*sq_dim+w_padding , y*sq_dim+h_padding, sq_dim, sq_dim}
             };
             white = !white;
@@ -45,6 +54,8 @@ void draw_board() {
         for(int y = 0; y < 8; y++) {
             Square sq = board[x][y];
             DrawRectangleRec(sq.rect, sq.col);
+            Vector2 textPos = (Vector2){ sq.rect.x + sq_dim/2, sq.rect.y + sq_dim/2};
+            DrawTextCodepoint(GetFontDefault(), sq.piece + '0', textPos, 12.0f, BLACK);
         }
     }
 
