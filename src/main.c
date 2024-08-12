@@ -27,6 +27,7 @@ typedef struct Square {
     Color col;
     Color main_col;
     int piece;
+    Vector2 pos;
     Rectangle rect;
 } Square;
 
@@ -42,6 +43,7 @@ void init_board() {
                 col(white),
                 col(white),
                 0, //TODO: use enum
+                (Vector2) {y, x},
                 (Rectangle) {x*sq_dim+w_padding , y*sq_dim+h_padding, sq_dim, sq_dim}
             };
             white = !white;
@@ -78,6 +80,18 @@ void init_board() {
     board[7][4].piece = KING;
 }
 
+void show_moves() {
+    int x = current->pos.x;
+    int y = current->pos.y;
+    printf("y: %d, x:%d\n", y, x);
+    if(current->piece == KING) {
+        if(y > 0) board[x][y-1].col = RED;
+        if(y < 7) board[x][y+1].col = RED;
+        if(x > 0) board[x-1][y].col = RED;
+        if(x < 7) board[x+1][y].col = RED;
+    }
+}
+
 void draw_board() {
     for(int y = 0; y < 8; y++) {
         for(int x = 0; x < 8; x++) {
@@ -101,12 +115,13 @@ void draw() {
 void check_input(Vector2 pos) {
     if(pos.x >= w_padding && pos.x < board_dim && pos.y >= h_padding && pos.y < board_dim)
     {
-        int x = (pos.x- w_padding)/sq_dim;
-        int y = (pos.y- h_padding)/sq_dim;
+        int x = (pos.x - w_padding)/sq_dim;
+        int y = (pos.y - h_padding)/sq_dim;
         if(current) current->col = current->main_col;
         current = &board[y][x];
     }
     if(current) current->col = BLUE;
+    show_moves();
 }
 
 void init() {
